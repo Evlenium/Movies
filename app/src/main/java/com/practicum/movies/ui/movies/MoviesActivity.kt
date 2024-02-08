@@ -12,14 +12,14 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.movies.R
 import com.practicum.movies.domain.models.Movie
 import com.practicum.movies.presentation.movies.MoviesSearchViewModel
 import com.practicum.movies.presentation.movies.MoviesState
-import com.practicum.movies.ui.poster.PosterActivity
+import com.practicum.movies.ui.poster.DetailsActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesActivity : ComponentActivity() {
 
@@ -31,7 +31,7 @@ class MoviesActivity : ComponentActivity() {
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    val intent = Intent(this@MoviesActivity, PosterActivity::class.java)
+                    val intent = Intent(this@MoviesActivity, DetailsActivity::class.java)
                     intent.putExtra("poster", movie.image)
                     startActivity(intent)
                 }
@@ -53,16 +53,16 @@ class MoviesActivity : ComponentActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private lateinit var viewModel: MoviesSearchViewModel
-
+    //private lateinit var viewModel: MoviesSearchViewModel
+    private val viewModel by viewModel<MoviesSearchViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movies)
 
-        viewModel = ViewModelProvider(
-            this,
-            MoviesSearchViewModel.getViewModelFactory()
-        )[MoviesSearchViewModel::class.java]
+//        viewModel = ViewModelProvider(
+//            this,
+//            MoviesSearchViewModel.getViewModelFactory()
+//        )[MoviesSearchViewModel::class.java]
 
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.queryInput)
@@ -92,7 +92,9 @@ class MoviesActivity : ComponentActivity() {
         }
 
         viewModel.observeShowToast().observe(this) {
-            showToast(it)
+            if (it != null) {
+                showToast(it)
+            }
         }
     }
 

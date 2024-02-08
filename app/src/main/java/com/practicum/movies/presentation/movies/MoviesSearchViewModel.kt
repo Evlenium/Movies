@@ -1,34 +1,21 @@
 package com.practicum.movies.presentation.movies
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.movies.R
+import androidx.lifecycle.ViewModel
 import com.practicum.movies.domain.api.MoviesInteractor
 import com.practicum.movies.domain.models.Movie
-import com.practicum.movies.util.Creator
 
 
-class MoviesSearchViewModel(application: Application) : AndroidViewModel(application) {
+class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MoviesSearchViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
     }
 
     private val stateLiveData = MutableLiveData<MoviesState>()
@@ -43,13 +30,13 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    private val moviesInteractor = Creator.provideMoviesInteractor(getApplication())
+//    private val moviesInteractor = Creator.provideMoviesInteractor(getApplication())
     private val handler = Handler(Looper.getMainLooper())
 
     fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
 
-    private val showToast = SingleLiveEvent<String>()
-    fun observeShowToast(): LiveData<String> = showToast
+    private val showToast = SingleLiveEvent<String?>()
+    fun observeShowToast(): SingleLiveEvent<String?> = showToast
 
     private var latestSearchText: String? = null
 
@@ -90,7 +77,7 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
                         errorMessage != null -> {
                             renderState(
                                 MoviesState.Error(
-                                    errorMessage = getApplication<Application>().getString(R.string.something_went_wrong),
+                                    errorMessage = "Что-то пошло не так",
                                 )
                             )
                             showToast.postValue(errorMessage)
@@ -99,7 +86,7 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
                         movies.isEmpty() -> {
                             renderState(
                                 MoviesState.Empty(
-                                    message = getApplication<Application>().getString(R.string.nothing_found),
+                                    message = "Ничего не найдено",
                                 )
                             )
                         }

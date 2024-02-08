@@ -9,7 +9,7 @@ import com.practicum.movies.presentation.poster.PosterPresenter
 import com.practicum.movies.presentation.poster.PosterView
 import com.practicum.movies.util.Creator
 
-class PosterActivity : Activity(), PosterView {
+class DetailsActivity : Activity(), PosterView {
 
     private lateinit var posterPresenter: PosterPresenter
 

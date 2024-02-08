@@ -11,16 +11,16 @@ import com.practicum.movies.presentation.poster.PosterPresenter
 import com.practicum.movies.presentation.poster.PosterView
 
 object Creator {
-    private fun getMoviesRepository(context: Context): MoviesRepository {
-        return MoviesRepositoryImpl(
-            RetrofitNetworkClient(context),
-            LocalStorage(context.getSharedPreferences("local_storage", Context.MODE_PRIVATE)),
-        )
-    }
-
-    fun provideMoviesInteractor(context: Context): MoviesInteractor {
-        return MoviesInteractorImpl(getMoviesRepository(context))
-    }
+//    private fun getMoviesRepository(context: Context): MoviesRepository {
+//        return MoviesRepositoryImpl(
+//            RetrofitNetworkClient(context),
+//            LocalStorage(context.getSharedPreferences("local_storage", Context.MODE_PRIVATE)),
+//        )
+//    }
+//
+//    fun provideMoviesInteractor(context: Context): MoviesInteractor {
+//        return MoviesInteractorImpl(getMoviesRepository(context))
+//    }
 
     fun providePosterPresenter(
         posterView: PosterView,
