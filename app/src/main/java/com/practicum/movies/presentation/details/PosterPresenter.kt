@@ -1,4 +1,4 @@
-package com.practicum.movies.presentation.poster
+package com.practicum.movies.presentation.details
 
 class PosterPresenter(
     private val view: PosterView,

@@ -1,9 +1,9 @@
-package com.practicum.movies.domain.impl
+package com.practicum.movies.domain.movies.impl
 
 
-import com.practicum.movies.domain.api.MoviesInteractor
-import com.practicum.movies.domain.api.MoviesRepository
-import com.practicum.movies.domain.models.Movie
+import com.practicum.movies.domain.movies.api.MoviesInteractor
+import com.practicum.movies.domain.movies.api.MoviesRepository
+import com.practicum.movies.domain.movies.models.Movie
 import com.practicum.movies.util.Resource
 
 import java.util.concurrent.Executors
@@ -21,6 +21,23 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
 
                 is Resource.Error -> {
                     consumer.consume(null, resource.message)
+                }
+            }
+        }
+    }
+
+    override fun getMoviesDetails(
+        movieId: String,
+        consumer: MoviesInteractor.MovieDetailsConsumer,
+    ) {
+        executor.execute {
+            when (val resource = repository.getMovieDetails(movieId)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(resource.data, resource.message)
                 }
             }
         }

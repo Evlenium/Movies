@@ -1,6 +1,6 @@
-package com.practicum.movies.data.dto
+package com.practicum.movies.data.movies.dto
 
-import com.practicum.movies.domain.models.Movie
+import com.practicum.movies.domain.movies.models.Movie
 
 class MoviesSearchResponse(val searchType: String,
                            val expression: String,

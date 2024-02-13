@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.practicum.movies.domain.api.MoviesInteractor
-import com.practicum.movies.domain.models.Movie
+import com.practicum.movies.domain.movies.api.MoviesInteractor
+import com.practicum.movies.domain.movies.models.Movie
 
 
 class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : ViewModel() {

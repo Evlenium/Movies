@@ -3,9 +3,9 @@ package com.practicum.movies.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.practicum.movies.data.NetworkClient
-import com.practicum.movies.data.network.IMDbApiService
-import com.practicum.movies.data.network.RetrofitNetworkClient
+import com.practicum.movies.data.movies.NetworkClient
+import com.practicum.movies.data.movies.network.IMDbApiService
+import com.practicum.movies.data.movies.network.RetrofitNetworkClient
 import com.practicum.movies.presentation.movies.LocalStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
