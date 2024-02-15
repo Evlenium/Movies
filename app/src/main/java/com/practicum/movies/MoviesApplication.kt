@@ -3,6 +3,7 @@ package com.practicum.movies
 import android.app.Application
 import com.practicum.movies.di.dataModule
 import com.practicum.movies.di.interactorModule
+import com.practicum.movies.di.navigationModule
 import com.practicum.movies.di.repositoryModule
 import com.practicum.movies.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -14,7 +15,10 @@ class MoviesApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MoviesApplication)
-            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+            modules(
+                dataModule, repositoryModule, interactorModule, viewModelModule,
+                navigationModule
+            )
         }
     }
 }

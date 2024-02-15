@@ -5,11 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import com.practicum.movies.R
+import com.practicum.movies.core.navigation.Router
 import com.practicum.movies.databinding.FragmentAboutBinding
 import com.practicum.movies.domain.details.MovieDetails
 import com.practicum.movies.presentation.details.AboutState
 import com.practicum.movies.presentation.details.AboutViewModel
-import com.practicum.movies.ui.cast.MoviesCastActivity
+import com.practicum.movies.ui.cast.MoviesCastFragment
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -28,6 +32,8 @@ class AboutFragment : Fragment() {
     private val aboutViewModel: AboutViewModel by viewModel {
         parametersOf(requireArguments().getString(MOVIE_ID))
     }
+
+    private val router : Router by inject()
 
     private lateinit var binding: FragmentAboutBinding
 
@@ -49,9 +55,8 @@ class AboutFragment : Fragment() {
             }
         }
         binding.showCastButton.setOnClickListener {
-            startActivity(
-                MoviesCastActivity.newInstance(
-                    context = requireContext(),
+            router.openFragment(
+                MoviesCastFragment.newInstance(
                     movieId = requireArguments().getString(MOVIE_ID).orEmpty()
                 )
             )
