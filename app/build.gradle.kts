@@ -57,4 +57,7 @@ dependencies {
     kapt("com.github.moxy-community:moxy-compiler:2.2.2")
 
     implementation("io.insert-koin:koin-android:3.3.0")
+
+    implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2")
+    implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2")
 }

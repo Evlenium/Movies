@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.practicum.movies.R
 import com.practicum.movies.databinding.ActivityMoviesCastBinding
 import com.practicum.movies.presentation.cast.MoviesCastViewModel
@@ -30,7 +31,10 @@ class MoviesCastActivity : AppCompatActivity(R.layout.activity_movies_cast) {
         parametersOf(intent.getStringExtra(ARGS_MOVIE_ID))
     }
 
-    private val adapter = MoviesCastAdapter()
+    private val adapter = ListDelegationAdapter(
+        movieCastHeaderDelegate(),
+        movieCastPersonDelegate(),
+    )
 
     private lateinit var binding: ActivityMoviesCastBinding
 

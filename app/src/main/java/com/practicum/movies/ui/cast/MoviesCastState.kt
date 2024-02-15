@@ -1,6 +1,6 @@
 package com.practicum.movies.ui.cast
 
-import com.practicum.movies.presentation.cast.MoviesCastRVItem
+import com.practicum.movies.ui.cast.core.RVItem
 
 sealed interface MoviesCastState {
 
@@ -8,11 +8,10 @@ sealed interface MoviesCastState {
 
     data class Content(
         val fullTitle: String,
-        val items: List<MoviesCastRVItem>,
+        val items: List<RVItem>,
     ) : MoviesCastState
 
     data class Error(
         val message: String,
     ) : MoviesCastState
-
 }
