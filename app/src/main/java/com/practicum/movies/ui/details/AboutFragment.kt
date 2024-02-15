@@ -9,6 +9,7 @@ import com.practicum.movies.databinding.FragmentAboutBinding
 import com.practicum.movies.domain.details.MovieDetails
 import com.practicum.movies.presentation.details.AboutState
 import com.practicum.movies.presentation.details.AboutViewModel
+import com.practicum.movies.ui.cast.MoviesCastActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -30,8 +31,10 @@ class AboutFragment : Fragment() {
 
     private lateinit var binding: FragmentAboutBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         binding = FragmentAboutBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -40,10 +43,18 @@ class AboutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         aboutViewModel.observeState().observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is AboutState.Content -> showDetails(it.movie)
                 is AboutState.Error -> showErrorMessage(it.message)
             }
+        }
+        binding.showCastButton.setOnClickListener {
+            startActivity(
+                MoviesCastActivity.newInstance(
+                    context = requireContext(),
+                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+                )
+            )
         }
     }
 
@@ -69,6 +80,5 @@ class AboutFragment : Fragment() {
             castValue.text = movieDetails.stars
             plot.text = movieDetails.plot
         }
-
     }
 }

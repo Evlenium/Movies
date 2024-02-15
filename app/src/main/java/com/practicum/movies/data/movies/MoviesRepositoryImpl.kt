@@ -1,10 +1,14 @@
 package com.practicum.movies.data.movies
 
 import android.util.Log
+import com.practicum.movies.data.cast.MovieCastRequest
+import com.practicum.movies.data.cast.MovieCastResponse
+import com.practicum.movies.data.cast.converters.MovieCastConverter
 import com.practicum.movies.data.details.MovieDetailsRequest
 import com.practicum.movies.data.details.MovieDetailsResponse
 import com.practicum.movies.data.movies.dto.MoviesSearchRequest
 import com.practicum.movies.data.movies.dto.MoviesSearchResponse
+import com.practicum.movies.domain.cast.MovieCast
 import com.practicum.movies.domain.details.MovieDetails
 import com.practicum.movies.domain.movies.api.MoviesRepository
 import com.practicum.movies.domain.movies.models.Movie
@@ -14,6 +18,7 @@ import com.practicum.movies.util.Resource
 class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
     private val localStorage: LocalStorage,
+    private val movieCastConverter: MovieCastConverter,
 ) : MoviesRepository {
 
     override fun searchMovies(expression: String): Resource<List<Movie>> {
@@ -55,7 +60,7 @@ class MoviesRepositoryImpl(
 
     override fun getMovieDetails(movieId: String): Resource<MovieDetails> {
         val response = networkClient.doRequest(MovieDetailsRequest(movieId))
-        Log.d("MyLog", response.toString())
+        //Log.d("MyLog", response.toString())
         return when (response.resultCode) {
             -1 -> {
                 Resource.Error("Проверьте подключение к интернету")
@@ -70,6 +75,27 @@ class MoviesRepositoryImpl(
                         )
                     )
                 }
+            }
+
+            else -> {
+                Resource.Error("Ошибка сервера")
+
+            }
+        }
+    }
+
+    override fun getMovieCast(movieId: String): Resource<MovieCast> {
+        val response = networkClient.doRequest(MovieCastRequest(movieId))
+        Log.d("MyLog", response.toString())
+        return when (response.resultCode) {
+            -1 -> {
+                Resource.Error("Проверьте подключение к интернету")
+            }
+
+            200 -> {
+                Resource.Success(
+                    data = movieCastConverter.convert(response as MovieCastResponse)
+                )
             }
 
             else -> {

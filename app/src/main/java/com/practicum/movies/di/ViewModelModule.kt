@@ -1,5 +1,6 @@
 package com.practicum.movies.di
 
+import com.practicum.movies.presentation.cast.MoviesCastViewModel
 import com.practicum.movies.presentation.details.AboutViewModel
 import com.practicum.movies.presentation.details.PosterViewModel
 import com.practicum.movies.presentation.movies.MoviesSearchViewModel
@@ -16,5 +17,8 @@ val viewModelModule = module {
     }
     viewModel { (posterUrl: String) ->
         PosterViewModel(posterUrl)
+    }
+    viewModel { (movieId: String) ->
+        MoviesCastViewModel(movieId, get())
     }
 }
