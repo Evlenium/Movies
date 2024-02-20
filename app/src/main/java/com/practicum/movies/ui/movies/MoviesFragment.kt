@@ -13,15 +13,15 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.movies.core.navigation.Router
+import com.practicum.movies.R
 import com.practicum.movies.databinding.FragmentMoviesBinding
 import com.practicum.movies.domain.movies.models.Movie
 import com.practicum.movies.presentation.movies.MoviesSearchViewModel
 import com.practicum.movies.presentation.movies.MoviesState
 import com.practicum.movies.ui.details.DetailsFragment
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
@@ -32,17 +32,13 @@ class MoviesFragment : Fragment() {
 
     private val viewModel by viewModel<MoviesSearchViewModel>()
 
-    private val router: Router by inject()
-
     private val adapter = MoviesAdapter(
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    router.openFragment(
-                        DetailsFragment.newInstance(
-                            movieId = movie.id,
-                            posterUrl = movie.image
-                        )
+                    findNavController().navigate(
+                        R.id.action_moviesFragment_to_detailsFragment,
+                        DetailsFragment.createArgs(movie.id, movie.image)
                     )
                 }
             }

@@ -8,6 +8,7 @@ import com.practicum.movies.data.details.MovieDetailsRequest
 import com.practicum.movies.data.movies.NetworkClient
 import com.practicum.movies.data.movies.dto.MoviesSearchRequest
 import com.practicum.movies.data.movies.dto.Response
+import com.practicum.movies.data.persons.dto.NamesSearchRequest
 
 class RetrofitNetworkClient(private val imdbService: IMDbApiService, private val context: Context) :
     NetworkClient {
@@ -16,7 +17,7 @@ class RetrofitNetworkClient(private val imdbService: IMDbApiService, private val
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
-        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest)) {
+        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest) && (dto !is NamesSearchRequest)) {
             return Response().apply { resultCode = 400 }
         }
 
@@ -27,6 +28,10 @@ class RetrofitNetworkClient(private val imdbService: IMDbApiService, private val
 
             is MovieDetailsRequest -> {
                 imdbService.getMovieDetails(dto.movieId).execute()
+            }
+
+            is NamesSearchRequest -> {
+                imdbService.searchNames(dto.expression).execute()
             }
 
             else -> {
