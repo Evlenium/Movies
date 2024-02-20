@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import com.practicum.movies.R
 import com.practicum.movies.core.navigation.Router
 import com.practicum.movies.databinding.FragmentAboutBinding
@@ -33,8 +33,6 @@ class AboutFragment : Fragment() {
         parametersOf(requireArguments().getString(MOVIE_ID))
     }
 
-    private val router : Router by inject()
-
     private lateinit var binding: FragmentAboutBinding
 
     override fun onCreateView(
@@ -55,10 +53,9 @@ class AboutFragment : Fragment() {
             }
         }
         binding.showCastButton.setOnClickListener {
-            router.openFragment(
-                MoviesCastFragment.newInstance(
-                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
-                )
+            findNavController().navigate(
+                R.id.action_detailsFragment_to_moviesCastFragment,
+                MoviesCastFragment.createArgs(requireArguments().getString(MOVIE_ID).orEmpty())
             )
         }
     }

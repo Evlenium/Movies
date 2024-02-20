@@ -12,20 +12,13 @@ import com.practicum.movies.databinding.FragmentDetailsBinding
 
 class DetailsFragment : Fragment() {
     companion object {
-
         private const val ARGS_MOVIE_ID = "movie_id"
         private const val ARGS_POSTER_URL = "poster_url"
-        const val TAG = "DetailsFragment"
-
-        fun newInstance(movieId: String, posterUrl: String): Fragment {
-            return DetailsFragment().apply {
-                arguments = bundleOf(
-                    ARGS_MOVIE_ID to movieId,
-                    ARGS_POSTER_URL to posterUrl
-                )
-            }
-        }
-
+        fun createArgs(movieId: String, posterUrl: String): Bundle =
+            bundleOf(
+                ARGS_MOVIE_ID to movieId,
+                ARGS_POSTER_URL to posterUrl
+            )
     }
 
     private lateinit var binding: FragmentDetailsBinding
