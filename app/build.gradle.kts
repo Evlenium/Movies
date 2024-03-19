@@ -62,4 +62,6 @@ dependencies {
 
     implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2")
     implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 }

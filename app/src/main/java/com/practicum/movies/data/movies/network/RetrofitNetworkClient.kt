@@ -9,38 +9,63 @@ import com.practicum.movies.data.movies.NetworkClient
 import com.practicum.movies.data.movies.dto.MoviesSearchRequest
 import com.practicum.movies.data.movies.dto.Response
 import com.practicum.movies.data.persons.dto.NamesSearchRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(private val imdbService: IMDbApiService, private val context: Context) :
     NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
         if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest) && (dto !is NamesSearchRequest)) {
             return Response().apply { resultCode = 400 }
         }
-
-        val response = when (dto) {
+        when (dto) {
             is MoviesSearchRequest -> {
-                imdbService.searchMovies(dto.expression).execute()
+                return withContext(Dispatchers.IO) {
+                    try {
+                        val response = imdbService.searchMovies(dto.expression)
+                        response.apply { resultCode = 200 }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
             }
 
             is MovieDetailsRequest -> {
-                imdbService.getMovieDetails(dto.movieId).execute()
+                return withContext(Dispatchers.IO) {
+                    try {
+                        val response = imdbService.getMovieDetails(dto.movieId)
+                        response.apply { resultCode = 200 }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
             }
 
             is NamesSearchRequest -> {
-                imdbService.searchNames(dto.expression).execute()
+                return withContext(Dispatchers.IO) {
+                    try {
+                        val response = imdbService.searchNames(dto.expression)
+                        response.apply { resultCode = 200 }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
             }
 
             else -> {
-                imdbService.getFullCast((dto as MovieCastRequest).movieId).execute()
+                return withContext(Dispatchers.IO) {
+                    try {
+                        val response = imdbService.getFullCast((dto as MovieCastRequest).movieId)
+                        response.apply { resultCode = 200 }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
             }
-        }
-        val body = response.body()
-        return body?.apply { resultCode = response.code() } ?: Response().apply {
-            resultCode = response.code()
         }
     }
 
