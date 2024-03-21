@@ -5,6 +5,9 @@ import com.practicum.movies.data.cast.MovieCastResponse
 import com.practicum.movies.data.cast.converters.MovieCastConverter
 import com.practicum.movies.data.details.MovieDetailsRequest
 import com.practicum.movies.data.details.MovieDetailsResponse
+import com.practicum.movies.data.movies.converters.MovieDbConvertor
+import com.practicum.movies.data.movies.db.AppDatabase
+import com.practicum.movies.data.movies.dto.MovieDto
 import com.practicum.movies.data.movies.dto.MoviesSearchRequest
 import com.practicum.movies.data.movies.dto.MoviesSearchResponse
 import com.practicum.movies.domain.cast.MovieCast
@@ -20,6 +23,8 @@ class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
     private val localStorage: LocalStorage,
     private val movieCastConverter: MovieCastConverter,
+    private val appDatabase: AppDatabase,
+    private val movieDbConvertor: MovieDbConvertor,
 ) : MoviesRepository {
 
     override fun searchMovies(expression: String): Flow<Resource<List<Movie>>> = flow {
@@ -42,6 +47,7 @@ class MoviesRepositoryImpl(
                             inFavorite = stored.toString().contains(it.id),
                         )
                     }
+                    saveMovie(results)
                     emit(Resource.Success(data))
                 }
             }
@@ -102,5 +108,10 @@ class MoviesRepositoryImpl(
                 emit(Resource.Error("Ошибка сервера"))
             }
         }
+    }
+
+    private suspend fun saveMovie(movies: List<MovieDto>) {
+        val movieEntities = movies.map { movie -> movieDbConvertor.map(movie) }
+        appDatabase.movieDao().insertMovies(movieEntities)
     }
 }

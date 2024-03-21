@@ -3,6 +3,7 @@ package com.practicum.movies.di
 import com.practicum.movies.presentation.cast.MoviesCastViewModel
 import com.practicum.movies.presentation.details.AboutViewModel
 import com.practicum.movies.presentation.details.PosterViewModel
+import com.practicum.movies.presentation.history.HistoryViewModel
 import com.practicum.movies.presentation.movies.MoviesSearchViewModel
 import com.practicum.movies.presentation.persons.NamesViewModel
 import org.koin.android.ext.koin.androidContext
@@ -25,5 +26,8 @@ val viewModelModule = module {
     }
     viewModel {
         NamesViewModel(androidContext(), get())
+    }
+    viewModel {
+        HistoryViewModel(androidContext(), get())
     }
 }

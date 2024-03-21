@@ -2,11 +2,15 @@ package com.practicum.movies.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.room.Room
 import com.google.gson.Gson
 import com.practicum.movies.data.movies.NetworkClient
+import com.practicum.movies.data.movies.db.AppDatabase
 import com.practicum.movies.data.movies.network.IMDbApiService
 import com.practicum.movies.data.movies.network.RetrofitNetworkClient
 import com.practicum.movies.presentation.movies.LocalStorage
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -21,6 +25,14 @@ val dataModule = module {
         Retrofit.Builder()
             .baseUrl("https://tv-api.com")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(
+                        HttpLoggingInterceptor()
+                            .setLevel(HttpLoggingInterceptor.Level.BODY)
+                    )
+                    .build()
+            )
             .build()
             .create(IMDbApiService::class.java)
     }
@@ -37,5 +49,10 @@ val dataModule = module {
 
     single<NetworkClient> {
         RetrofitNetworkClient(get(), androidContext())
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
     }
 }

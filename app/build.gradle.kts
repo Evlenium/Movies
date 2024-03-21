@@ -54,6 +54,9 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+    implementation ("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
+
     implementation("com.github.moxy-community:moxy:2.2.2")
     implementation("com.github.moxy-community:moxy-android:2.2.2")
     kapt("com.github.moxy-community:moxy-compiler:2.2.2")
@@ -64,4 +67,8 @@ dependencies {
     implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
+    implementation("androidx.room:room-runtime:2.5.1")
+    kapt("androidx.room:room-compiler:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.1")
 }
