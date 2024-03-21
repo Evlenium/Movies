@@ -1,6 +1,6 @@
 package com.practicum.movies.presentation.movies
 
-import com.practicum.movies.domain.models.Movie
+import com.practicum.movies.domain.movies.models.Movie
 
 sealed interface MoviesState {
 

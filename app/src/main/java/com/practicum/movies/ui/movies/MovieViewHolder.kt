@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.practicum.movies.R
-import com.practicum.movies.domain.models.Movie
+import com.practicum.movies.domain.movies.models.Movie
 
 class MovieViewHolder(
     parent: ViewGroup,
