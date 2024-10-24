@@ -17,5 +17,8 @@ jobs:
         env:
           GH_MOVIES_ACCESS_TOKEN: ${{ secrets.GH_MOVIES_ACCESS_TOKEN }}
         run: echo GH_MOVIES_ACCESS_TOKEN=\"$GH_MOVIES_ACCESS_TOKEN\" > ./local.properties
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
       - name: Build the app
         run: ./gradlew assembleDebug
+        
