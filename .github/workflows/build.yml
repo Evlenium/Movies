@@ -35,9 +35,9 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
      
-      - name: Access APOD_API_KEY
+      - name: Access GH_MOVIES_ACCESS_TOKEN
         env:
           APOD_API_KEY: $
-          run: echo APOD_API_KEY=\"$APOD_API_KEY\" > ./local.properties
+          run: echo GH_MOVIES_ACCESS_TOKEN=\"$GH_MOVIES_ACCESS_TOKEN\" > ./local.properties
       - name: Build the app
         run: ./gradlew assembleDebug
