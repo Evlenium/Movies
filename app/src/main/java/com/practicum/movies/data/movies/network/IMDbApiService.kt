@@ -4,7 +4,6 @@ import com.practicum.movies.data.cast.MovieCastResponse
 import com.practicum.movies.data.details.MovieDetailsResponse
 import com.practicum.movies.data.movies.dto.MoviesSearchResponse
 import com.practicum.movies.data.persons.dto.NamesSearchResponse
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 
