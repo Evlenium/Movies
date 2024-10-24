@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -16,10 +19,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "GH_MOVIES_ACCESS_TOKEN", getApiKey())
     }
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     buildTypes {
@@ -38,6 +44,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+fun getApiKey(): String {
+    val propFile = rootProject.file("./local.properties")
+    val properties = Properties()
+    properties.load(FileInputStream(propFile))
+    return properties["GH_MOVIES_ACCESS_TOKEN"] as String
 }
 
 dependencies {
