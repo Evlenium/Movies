@@ -1,34 +1,23 @@
 package com.practicum.movies.presentation.movies
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.movies.R
-import com.practicum.movies.domain.api.MoviesInteractor
-import com.practicum.movies.domain.models.Movie
-import com.practicum.movies.util.Creator
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.practicum.movies.domain.movies.api.MoviesInteractor
+import com.practicum.movies.domain.movies.models.Movie
+import com.practicum.movies.util.debounce
+import kotlinx.coroutines.launch
 
 
-class MoviesSearchViewModel(application: Application) : AndroidViewModel(application) {
+class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MoviesSearchViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
     }
 
     private val stateLiveData = MutableLiveData<MoviesState>()
@@ -43,13 +32,12 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    private val moviesInteractor = Creator.provideMoviesInteractor(getApplication())
     private val handler = Handler(Looper.getMainLooper())
 
     fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
 
-    private val showToast = SingleLiveEvent<String>()
-    fun observeShowToast(): LiveData<String> = showToast
+    private val showToast = SingleLiveEvent<String?>()
+    fun observeShowToast(): SingleLiveEvent<String?> = showToast
 
     private var latestSearchText: String? = null
 
@@ -57,64 +45,64 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
-    fun searchDebounce(changedText: String) {
-        if (latestSearchText == changedText) {
-            return
+    private val movieSearchDebounce =
+        debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
+            searchRequest(changedText)
         }
 
-        this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { searchRequest(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+    fun searchDebounce(changedText: String) {
+        if (latestSearchText != changedText) {
+            latestSearchText = changedText
+            movieSearchDebounce(changedText)
+        }
     }
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
+
             renderState(MoviesState.Loading)
 
-            moviesInteractor.searchMovies(newSearchText, object : MoviesInteractor.MoviesConsumer {
-                override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
-                    val movies = mutableListOf<Movie>()
-                    if (foundMovies != null) {
-                        movies.addAll(foundMovies)
+            viewModelScope.launch {
+                moviesInteractor
+                    .searchMovies(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
+            }
+        }
+    }
 
-                    when {
-                        errorMessage != null -> {
-                            renderState(
-                                MoviesState.Error(
-                                    errorMessage = getApplication<Application>().getString(R.string.something_went_wrong),
-                                )
-                            )
-                            showToast.postValue(errorMessage)
-                        }
+    private fun processResult(foundMovies: List<Movie>?, errorMessage: String?) {
+        val movies = mutableListOf<Movie>()
+        if (foundMovies != null) {
+            movies.addAll(foundMovies)
+        }
 
-                        movies.isEmpty() -> {
-                            renderState(
-                                MoviesState.Empty(
-                                    message = getApplication<Application>().getString(R.string.nothing_found),
-                                )
-                            )
-                        }
+        when {
+            errorMessage != null -> {
+                renderState(
+                    MoviesState.Error(
+                        errorMessage = "Что-то пошло не так",
+                    )
+                )
+                showToast.postValue(errorMessage)
+            }
 
-                        else -> {
-                            renderState(
-                                MoviesState.Content(
-                                    movies = movies,
-                                )
-                            )
-                        }
-                    }
+            movies.isEmpty() -> {
+                renderState(
+                    MoviesState.Empty(
+                        message = "Ничего не найдено",
+                    )
+                )
+            }
 
-                }
-            })
+            else -> {
+                renderState(
+                    MoviesState.Content(
+                        movies = movies,
+                    )
+                )
+            }
         }
     }
 

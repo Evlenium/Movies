@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.practicum.movies.R
-import com.practicum.movies.domain.models.Movie
+import com.practicum.movies.domain.movies.models.Movie
 
 class MovieViewHolder(
     parent: ViewGroup,
@@ -36,7 +36,7 @@ class MovieViewHolder(
 
     private fun getFavoriteToggleDrawable(inFavorite: Boolean): Drawable? {
         return itemView.context.getDrawable(
-            if (inFavorite) R.drawable.baseline_favorite_24 else R.drawable.baseline_close_24
+            if (inFavorite) R.drawable.like else R.drawable.empty_like
         )
     }
 }
