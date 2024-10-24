@@ -29,16 +29,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
      
       - name: Access GH_MOVIES_ACCESS_TOKEN
         env:
-          APOD_API_KEY: $
+          GH_MOVIES_ACCESS_TOKEN: ${{ secrets.GH_MOVIES_ACCESS_TOKEN }}
           run: echo GH_MOVIES_ACCESS_TOKEN=\"$GH_MOVIES_ACCESS_TOKEN\" > ./local.properties
       - name: Build the app
         run: ./gradlew assembleDebug
